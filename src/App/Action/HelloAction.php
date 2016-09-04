@@ -3,19 +3,25 @@ namespace App\Action;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 class HelloAction
 {
+    private $renderer;
+
+    public function __construct(TemplateRendererInterface $renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
-        $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
 
-        $response->getBody()->write(sprintf(
-            '<h1>Hello, %s!</h1>',
-            $target
-        ));
-        return $response->withHeader('Content-Type', 'text/html');
+        return new HtmlResponse(
+            $this->renderer->render('app::hello-world', ['target' => $target])
+        );
     }
 }

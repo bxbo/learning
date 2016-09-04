@@ -24,5 +24,11 @@ return [
             'middleware' => App\Action\PingAction::class,
             'allowed_methods' => ['GET'],
         ],
+        [
+            'name' => 'hello',
+            'path' => '/hello',
+            'middleware' => App\Action\HelloAction::class,
+            'allowed_methods' => ['GET'],
+        ],
     ],
 ];
